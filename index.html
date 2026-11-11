@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#100d18" />
+  <title>ZENITH — Ashes Below</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-shell">
+    <canvas id="game-canvas"></canvas>
+    <div class="vignette"></div>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Zenith home"><span class="brand-mark">✳</span><span>ZENITH</span><i>ASHES BELOW</i></a>
+      <div class="world-label"><span class="live-dot"></span><span id="biome-label">THE UNDERWORLD</span><small>WORLD 01 · SEED 5162024</small></div>
+      <div class="top-actions"><button class="icon-btn" id="map-btn" title="Map (M)">⌗</button><button class="icon-btn" id="sound-btn" title="Sound">♫</button><button class="icon-btn" id="pause-btn" title="Pause (Esc)">Ⅱ</button></div>
+    </header>
+
+    <section class="vitals panel">
+      <div class="vital-head"><span>VITALS</span><span class="mono" id="hp-text">100 / 100</span></div>
+      <div class="heart-row" id="hearts"></div>
+      <div class="mana-row"><span class="mana-gem">✦</span><div class="mana-track"><i id="mana-fill"></i></div><span class="mono" id="mana-text">60</span></div>
+      <div class="buff-row"><span class="buff-icon">♨</span><span>EMBER WARD</span><small id="buff-timer">02:14</small></div>
+    </section>
+
+    <section class="objective panel"><div class="eyebrow">CURRENT OBJECTIVE <span class="objective-dot"></span></div><strong id="objective-title">Climb out of the Ashen Deep</strong><p id="objective-copy">Mine upward. Find a way through the burning crust.</p><div class="progress-line"><i id="progress-fill"></i></div><div class="progress-caption"><span>ASCENT</span><b id="height-readout">04m</b></div></section>
+
+    <section class="minimap panel"><div class="mini-head"><span>FIELD SCAN</span><span class="signal">◉ LIVE</span></div><div class="map-box"><canvas id="mini-canvas" width="230" height="110"></canvas><div class="map-coords" id="coords">X -30 · Y 04</div></div></section>
+
+    <section class="quest-toast" id="toast"><span class="toast-icon">✦</span><div><b id="toast-title">A world wakes</b><small id="toast-copy">The Zenith seed has taken hold.</small></div></section>
+
+    <div class="boss-bar hidden" id="boss-bar"><div class="boss-name"><span>✦</span><span id="boss-name">THE EYE OF CTHULHU</span><small id="boss-phase">PHASE I · HUNT</small></div><div class="boss-track"><i id="boss-fill"></i></div></div>
+
+    <div class="crosshair"><i></i><b></b></div>
+    <div class="interact-hint" id="interact-hint"></div>
+
+    <div class="bottom-hud">
+      <div class="weapon-card panel"><div class="weapon-art" id="weapon-art">⚔</div><div><small>READY WEAPON</small><b id="weapon-name">CINDERBLADE</b><span id="weapon-sub">MELEE · 18 DMG</span></div><kbd>1</kbd></div>
+      <div class="hotbar panel" id="hotbar"></div>
+      <div class="right-hud"><div class="depth-card panel"><span class="depth-icon">⌁</span><div><small>DEPTH</small><b id="depth-readout">HELL · 1,240m</b></div></div><button class="craft-btn panel" id="craft-btn"><span>⊞</span><div><b>PACK & CRAFT</b><small>INVENTORY <kbd>I</kbd></small></div></button></div>
+    </div>
+
+    <div class="controls-note"><span>W A S D</span> MOVE <i>·</i> <span>SPACE</span> JUMP <i>·</i> <span>CLICK</span> ATTACK <i>·</i> <span>RIGHT CLICK</span> MINE <i>·</i> <span>Q</span> BUILD</div>
+    <div class="toast-stack" id="toast-stack"></div>
+
+    <div class="overlay hidden" id="inventory-overlay"><div class="modal inventory-modal"><button class="close-btn" data-close>×</button><div class="modal-kicker">FIELD KIT · SURVIVAL LOADOUT</div><h1>Pack & craft<span>.</span></h1><p class="modal-desc">Everything you need to make it to the surface. Recipes unlock as you gather.</p><div class="inventory-layout"><div><div class="section-label">BACKPACK <small>24 SLOTS</small></div><div class="inventory-grid" id="inventory-grid"></div><div class="materials-strip" id="materials-strip"></div></div><div class="recipe-column"><div class="section-label">QUICK RECIPES <small>AT HAND</small></div><div id="recipe-list"></div></div></div><div class="modal-footer"><span><kbd>I</kbd> CLOSE PACK</span><span>CRAFTING IS ALWAYS AVAILABLE</span></div></div></div>
+    <div class="overlay hidden" id="pause-overlay"><div class="modal pause-modal"><div class="modal-kicker">RUN PAUSED · WORLD 01</div><h1>Catch your breath<span>.</span></h1><p class="modal-desc">The Underworld is still waiting below.</p><button class="primary-btn" id="resume-btn">RESUME DESCENT <span>→</span></button><div class="pause-stats"><span>DEPTH <b id="pause-depth">1,240m</b></span><span>ORE FOUND <b id="pause-ore">0</b></span><span>SEED <b>5162024</b></span></div></div></div>
+    <div class="overlay hidden" id="death-overlay"><div class="modal pause-modal death-modal"><div class="modal-kicker">SIGNAL LOST · THE ASHEN DEEP</div><h1>Not the end<span>.</span></h1><p class="modal-desc">You left a little more of yourself in the dark.</p><button class="primary-btn" id="respawn-btn">RETURN TO CHECKPOINT <span>↻</span></button><div class="pause-stats"><span>WORLD <b>ZENITH 01</b></span><span>LOST <b id="lost-ore">0 ORE</b></span><span>CHECKPOINT <b id="checkpoint-label">ASHEN RIFT</b></span></div></div></div>
+    <div class="touch-controls"><button data-touch="left">◀</button><button data-touch="right">▶</button><button data-touch="jump">▲</button><button data-touch="attack">✦</button><button data-touch="mine">▧</button></div>
+  </div>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
