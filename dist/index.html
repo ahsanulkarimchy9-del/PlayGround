@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0708" />
+  <title>ZENITH // DESCENT — 3D Survival Sandbox</title>
+  <script type="module" crossorigin src="./assets/index-Cl3KUfb2.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CJDYIqLG.css">
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene" aria-label="Zenith Descent game viewport"></canvas>
+
+    <div id="loading">
+      <div class="load-inner">
+        <div class="load-eyebrow">GETFIXEDBOI · WORLD 7 · HARDCORE</div>
+        <h1 class="load-title">ZENITH<span>//</span>DESCENT</h1>
+        <div class="load-rule"><i></i><b>◆</b><i></i></div>
+        <p class="load-sub">Crafting the underworld. Collapsing the heavens.</p>
+        <div class="load-track"><div id="load-fill"></div></div>
+        <div class="load-status" id="load-status">SEEDING THE ABYSS</div>
+        <div class="load-tip">TIP — The Wall of Flesh is rising. Everything above you wants you dead.</div>
+      </div>
+    </div>
+
+    <div id="hud" class="hidden">
+      <div class="hud-vignette"></div>
+
+      <header class="top-left panel-ghost">
+        <div class="brand"><span class="brand-mark">◆</span> ZENITH <em>//</em> DESCENT</div>
+        <div class="objective">
+          <span class="obj-kicker">PRIMARY OBJECTIVE</span>
+          <span class="obj-main" id="objective-text">Ascend from the Underworld</span>
+          <span class="obj-sub" id="objective-sub">Tunnel upward. Break the seal. Reach the surface.</span>
+        </div>
+        <div class="progress-row">
+          <div class="progress-chip"><span>DEPTH</span><b id="depth-value">—</b></div>
+          <div class="progress-chip"><span>BIOME</span><b id="biome-value">—</b></div>
+          <div class="progress-chip"><span>SEED</span><b>getfixedboi</b></div>
+        </div>
+      </header>
+
+      <div class="boss-wrap hidden" id="boss-wrap">
+        <div class="boss-name" id="boss-name">EYE OF CTHULHU</div>
+        <div class="boss-bar"><div id="boss-fill"></div><i></i></div>
+        <div class="boss-phase" id="boss-phase">PHASE I</div>
+      </div>
+
+      <aside class="top-right">
+        <div class="minimap-shell">
+          <canvas id="minimap" width="184" height="184"></canvas>
+          <div class="minimap-ring"></div>
+          <div class="compass n">N</div><div class="compass e">E</div><div class="compass s">S</div><div class="compass w">W</div>
+          <div class="minimap-label" id="minimap-label">THE UNDERWORLD</div>
+        </div>
+        <div class="clock-row panel-ghost">
+          <span id="clock-icon">☾</span><b id="clock-text">00:00</b>
+          <span class="clock-sep"></span>
+          <span id="fps-text">60 FPS</span>
+        </div>
+        <div class="quest panel-ghost">
+          <div class="quest-title">SURVIVAL LOG</div>
+          <div class="quest-line"><span id="q-kills">0</span> kills</div>
+          <div class="quest-line"><span id="q-blocks">0</span> blocks mined</div>
+          <div class="quest-line"><span id="q-crystals">0</span>/5 life crystals</div>
+        </div>
+      </aside>
+
+      <div class="crosshair" id="crosshair"><i></i><b></b><em></em></div>
+      <div class="interact hidden" id="interact"><kbd>E</kbd><span id="interact-text">Use Ritual Altar</span></div>
+      <div class="mine-wrap hidden" id="mine-wrap"><div class="mine-label" id="mine-label">MINING</div><div class="mine-track"><div id="mine-fill"></div></div></div>
+
+      <div class="vitals">
+        <div class="vital-head"><span>VITALITY</span><b id="hp-text">100 / 100</b></div>
+        <div class="vital-bar hp"><div id="hp-fill"></div><i></i></div>
+        <div class="vital-head mana"><span>ARCANE</span><b id="mana-text">100 / 100</b></div>
+        <div class="vital-bar mp"><div id="mana-fill"></div><i></i></div>
+        <div class="buff-row">
+          <div class="buff" id="buff-flight">◈ WINGS</div>
+          <div class="buff" id="buff-bed">▣ BED</div>
+          <div class="buff" id="buff-grapple">⌁ HOOK</div>
+        </div>
+      </div>
+
+      <div class="center-bottom">
+        <div class="hotbar" id="hotbar"></div>
+        <div class="weapon-name" id="weapon-name">EMBER BLADE</div>
+      </div>
+
+      <div class="controls panel-ghost" id="controls-hint">
+        <div><kbd>WASD</kbd> move <kbd>SPACE</kbd> jump / fly</div>
+        <div><kbd>LMB</kbd> attack <kbd>RMB</kbd> mine <kbd>F</kbd> place</div>
+        <div><kbd>Q</kbd> dash <kbd>G</kbd> grapple <kbd>V</kbd> view</div>
+        <div><kbd>TAB</kbd> inventory / craft <kbd>H</kbd> field manual</div>
+      </div>
+
+      <div class="toasts" id="toasts"></div>
+      <div class="event-banner hidden" id="event-banner"><span id="event-kicker">EVENT</span><b id="event-title">THE WALLS SHUDDER</b></div>
+
+      <div class="damage-flash" id="damage-flash"></div>
+      <div class="lava-flash" id="lava-flash"></div>
+    </div>
+
+    <div id="inventory" class="overlay hidden">
+      <div class="inv-window">
+        <div class="inv-head">
+          <div>
+            <div class="inv-kicker">SURVIVOR'S CACHE · AUTO-SORTED</div>
+            <h2>INVENTORY <em>&amp;</em> FABRICATION</h2>
+          </div>
+          <div class="inv-meta"><span id="inv-capacity">0 / 30</span><button class="close-x" data-close="inventory">✕</button></div>
+        </div>
+        <div class="inv-body">
+          <section class="inv-grid-wrap">
+            <div class="inv-grid" id="inv-grid"></div>
+            <div class="station-row" id="station-row"></div>
+            <div class="inv-hint">Click a placeable item to bind it to <kbd>F</kbd>. Crafting consumes materials immediately.</div>
+          </section>
+          <section class="craft-wrap">
+            <div class="craft-tabs" id="craft-tabs">
+              <button class="active" data-tab="weapons">WEAPONS</button>
+              <button data-tab="gear">GEAR</button>
+              <button data-tab="base">BASE</button>
+              <button data-tab="consumables">CONSUMABLES</button>
+            </div>
+            <div class="craft-list" id="craft-list"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="ritual" class="overlay hidden">
+      <div class="ritual-window">
+        <div class="ritual-glow"></div>
+        <div class="inv-kicker">FORBIDDEN RITE</div>
+        <h2>THE ALTAR HUNGERS</h2>
+        <p>Offer the world a name, and it will answer with teeth.</p>
+        <div class="ritual-list">
+          <button class="ritual-card" data-boss="eye"><span class="ritual-sigil">◉</span><span><b>EYE OF CTHULHU</b><i>Phase-shifting ocular horror · 900 HP</i></span><em>SUMMON</em></button>
+          <button class="ritual-card" data-boss="queen"><span class="ritual-sigil">⬡</span><span><b>QUEEN BEE</b><i>Hive tyrant · venom stingers · 700 HP</i></span><em>SUMMON</em></button>
+          <button class="ritual-card" data-boss="wall"><span class="ritual-sigil">▥</span><span><b>WALL OF FLESH</b><i>Ultimate zenith trial · 3000 HP</i></span><em>SUMMON</em></button>
+        </div>
+        <div class="ritual-foot"><button class="ghost-btn" data-close="ritual">LEAVE THE ALTAR</button><span>Bosses scale to your vitality. There is no shame in retreat.</span></div>
+      </div>
+    </div>
+
+    <div id="help" class="overlay hidden">
+      <div class="help-window">
+        <div class="inv-kicker">FIELD MANUAL · SURVIVAL PROTOCOL</div>
+        <h2>DESCEND. MINE. ASCEND.</h2>
+        <div class="help-cols">
+          <div>
+            <h3>MOVEMENT</h3>
+            <p><kbd>WASD</kbd> move · <kbd>SHIFT</kbd> sprint · <kbd>SPACE</kbd> jump / hold to fly with wings</p>
+            <p><kbd>Q</kbd> phase-dash (brief invulnerability) · <kbd>G</kbd> fire grapple hook</p>
+            <p><kbd>C</kbd> dive · <kbd>V</kbd> first / third person · <kbd>ESC</kbd> release mouse</p>
+            <h3>COMBAT</h3>
+            <p><kbd>LMB</kbd> attack · <kbd>1</kbd> Ember Blade · <kbd>2</kbd> Demon Bow · <kbd>3</kbd> Starfall Staff</p>
+            <p><kbd>RMB</kbd> hold to mine · <kbd>F</kbd> place bound item · <kbd>E</kbd> interact</p>
+            <h3>BUILD</h3>
+            <p><kbd>TAB</kbd> inventory / crafting · place a <b>Bed</b> to anchor respawn · place torches to light the dark</p>
+          </div>
+          <div>
+            <h3>ZENITH RULES</h3>
+            <p>You woke in <b>the Underworld</b>. The surface is 55 meters of hostile strata above you. Every layer is fused: Corruption and Crimson bleed into each other, Not the Bees hives leak honey into lava, and The Constant drains the light from your torch.</p>
+            <p>Mine <b>Hellstone</b>, <b>Demonite</b> and <b>Crimtane</b>. Smash <b>Life Crystals</b> to grow stronger. Build workstations to unlock the deeper recipes. Summon the three trials at the Ritual Altar beside your spawn.</p>
+            <h3>HAZARDS</h3>
+            <p><b>Lava Slimes</b> leave molten pools on death. <b>Demon Eyes</b> hunt in packs. Lava inflicts burning damage. Falling more than 7 meters hurts.</p>
+            <p class="help-quote">"The world is fixed. You are not."</p>
+          </div>
+        </div>
+        <div class="ritual-foot"><button class="ghost-btn" data-close="help">RETURN TO THE ABYSS</button><span>Press H at any time to reopen this manual.</span></div>
+      </div>
+    </div>
+
+    <div id="death" class="overlay hidden">
+      <div class="death-inner">
+        <div class="death-kicker">THE WORLD RECLAIMS YOU</div>
+        <h1>YOU DIED</h1>
+        <p id="death-cause">The lava was patient.</p>
+        <button id="respawn-btn" class="gold-btn">RESPAWN AT ANCHOR</button>
+        <span class="death-tip">Your bed remembers. Your inventory persists.</span>
+      </div>
+    </div>
+
+    <div id="touch" class="hidden">
+      <div class="touch-stick" id="touch-stick"><i></i></div>
+      <div class="touch-look" id="touch-look"></div>
+      <div class="touch-buttons">
+        <button data-touch="jump">▲</button>
+        <button data-touch="attack">⚔</button>
+        <button data-touch="mine">⛏</button>
+        <button data-touch="dash">»</button>
+        <button data-touch="grapple">⌁</button>
+        <button data-touch="inventory">▦</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
